@@ -1,0 +1,18 @@
+stages:
+    - api-build
+    - app-build
+
+api-build:
+    stage: api-build
+    image: python:3.11-alpine
+    script:
+        - pip3 install -r api/requirements.txt
+        - python3 api.py &
+        - sleep 10
+
+app-build:
+    stage: app-build
+    image: node:18-alpine
+    script:
+        - cd app/ && npm install
+        - npm run build
