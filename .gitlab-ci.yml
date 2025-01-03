@@ -7,7 +7,7 @@ api-build:
     image: python:3.11-alpine
     script:
         - pip3 install -r api/requirements.txt
-        - python3 api.py &
+        - python3 api/api.py &
         - sleep 10
 
 app-build:
