@@ -7,20 +7,17 @@ import { Button } from "./ui/button";
 const IPDisplay = () => {
   const { toast } = useToast();
   const [copiedIp, setCopiedIp] = useState(false);
-  const [copiedAgent, setCopiedAgent] = useState(false);
+  const [copiedCurl, setCopiedCurl] = useState(false);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["ip"],
     queryFn: async () => {
-      const response = await fetch("https://api.ipty.org/");
+      const response = await fetch("https://api.ipty.org");
       if (!response.ok) {
         throw new Error("Failed to fetch IP address");
       }
       const ip = await response.text();
-      return {
-        ip,
-        userAgent: navigator.userAgent,
-      };
+      return { ip };
     },
     retry: 1,
     meta: {
@@ -34,19 +31,19 @@ const IPDisplay = () => {
     },
   });
 
-  const handleCopy = async (text: string, type: 'ip' | 'agent') => {
+  const handleCopy = async (text: string, type: 'ip' | 'curl') => {
     try {
       await navigator.clipboard.writeText(text);
       if (type === 'ip') {
         setCopiedIp(true);
         setTimeout(() => setCopiedIp(false), 2000);
       } else {
-        setCopiedAgent(true);
-        setTimeout(() => setCopiedAgent(false), 2000);
+        setCopiedCurl(true);
+        setTimeout(() => setCopiedCurl(false), 2000);
       }
       toast({
         title: "Copied!",
-        description: `${type === 'ip' ? 'IP address' : 'User agent'} copied to clipboard`,
+        description: `${type === 'ip' ? 'IP address' : 'curl command'} copied to clipboard`,
       });
     } catch (err) {
       toast({
@@ -94,28 +91,26 @@ const IPDisplay = () => {
           </div>
         </div>
 
-        {/* User Agent Section */}
-        {data?.userAgent && (
-          <div className="p-4 bg-background/50 rounded-lg">
-            <h3 className="text-sm font-medium text-foreground/60 mb-2">User Agent</h3>
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-sm text-foreground/80 break-all">{data.userAgent}</p>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => handleCopy(data.userAgent, 'agent')}
-                className="hover:bg-white/10 shrink-0"
-                title="Copy user agent"
-              >
-                {copiedAgent ? (
-                  <CheckCheck className="text-green-500" />
-                ) : (
-                  <Copy className="text-foreground/60" />
-                )}
-              </Button>
-            </div>
+        {/* Curl Command Section */}
+        <div className="p-4 bg-background/50 rounded-lg">
+          <h3 className="text-sm font-medium text-foreground/60 mb-2">Shell Command</h3>
+          <div className="flex items-center justify-between gap-3">
+            <code className="text-sm text-foreground/80 font-mono">curl -L api.ipty.org</code>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => handleCopy('curl -L api.ipty.org', 'curl')}
+              className="hover:bg-white/10 shrink-0"
+              title="Copy curl command"
+            >
+              {copiedCurl ? (
+                <CheckCheck className="text-green-500" />
+              ) : (
+                <Copy className="text-foreground/60" />
+              )}
+            </Button>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
