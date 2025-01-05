@@ -18,10 +18,12 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Build Python API
+      - name: Install Python API requirements
         run: |
-          pip3 install -r api/requirements.txt
-          python3 api/api.py & sleep 10
+          cd api/
+          pip3 install -r requirements.txt
+          python3 api.py & sleep 10
+          echo api.py test succeeded!
 
   app-build:
     runs-on: ubuntu-latest
