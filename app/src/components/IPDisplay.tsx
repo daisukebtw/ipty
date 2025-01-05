@@ -12,7 +12,7 @@ const IPDisplay = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["ip"],
     queryFn: async () => {
-      const response = await fetch("https://test.bezdar.eu/");
+      const response = await fetch("https://api.ipty.org/");
       if (!response.ok) {
         throw new Error("Failed to fetch IP address");
       }

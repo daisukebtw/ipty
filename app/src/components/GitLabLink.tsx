@@ -1,7 +1,7 @@
 const GitLabLink = () => {
   return (
     <a
-      href="https://gitlab.com"
+      href="https://gitlab.com/daisukebtw/ipty"
       target="_blank"
       rel="noopener noreferrer"
       className="fixed top-4 right-4 text-[#FC6D26] hover:text-[#E24329] transition-colors"
