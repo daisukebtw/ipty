@@ -1,0 +1,34 @@
+name: ipty build test
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+
+jobs:
+  api-build:
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.11-alpine
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build Python API
+        uses: |
+          pip3 install -r requirements.txt
+          python3 api/api.py & sleep 10
+
+  app-build:
+    runs-on: ubuntu-latest
+    container:
+      image: node:18-alpine
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build TypeScript APP
+        uses: |
+          cd app/ && npm install
+          npm run build
