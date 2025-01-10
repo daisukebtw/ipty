@@ -40,7 +40,7 @@ jobs:
           token: ${{ secrets.K8S_CONFIG_REPO_TOKEN }}
           ref: main
 
-      - name: Update API Kubernetes manifest
+      - name: Update API and APP Kubernetes manifest
         run: |
           API_MANIFEST_FILE=api-ipty-deployment.yaml
           APP_MANIFEST_FILE=app-ipty-deployment.yaml
