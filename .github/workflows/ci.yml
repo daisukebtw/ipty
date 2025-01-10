@@ -13,13 +13,14 @@ jobs:
     env:
       API_IMAGE_NAME: ipty-api
       APP_IMAGE_NAME: ipty-app
+      DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_SECRET }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Log in to DockerHub
-        run: docker login -u daisukebtw -p${{ secrets.DOCKERHUB_SECRET }}
+        run: echo "$DOCKER_PASSWORD" | docker login -u daisukebtw --password-stdin
       
       - name: Build Docker image
         run: |
