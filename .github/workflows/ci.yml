@@ -7,37 +7,51 @@ on:
   pull_request:
 
 jobs:
-  api-build:
+  build:
     runs-on: ubuntu-latest
+    
+    env:
+      API_IMAGE_NAME: ipty-api
+      APP_IMAGE_NAME: ipty-app
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      - name: Install Python API requirements
+      - name: Log in to DockerHub
+        run: docker login -u daisukebtw -p ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Build Docker image
         run: |
-          cd api/
-          pip3 install -r requirements.txt
-          python3 api.py & sleep 10
-          echo api.py test succeeded!
-
-  app-build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Build TypeScript APP
+          VERSION="1.${{ github.run_number }}"
+          docker build -t daisukebtw/$API_IMAGE_NAME:$VERSION ./api
+          docker build -t daiuskebtw/$APP_IMAGE_NAME:$VERSION ./app
+      
+      - name: Push Docker image
         run: |
-          cd app/
-          npm install
-          npm run build
+          docker push daisukebtw/$API_IMAGE_NAME:$VERSION
+          docker push daisukebtw/$APP_IMAGE_NAME:$VERSION
+
+
+      - name: Checkout configuration repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.K8S_CONFIG_REPO }}
+          token: ${{ secrets.K8S_CONFIG_REPO_TOKEN }}
+          ref: main
+
+      - name: Update API Kubernetes manifest
+        run: |
+          API_MANIFEST_FILE=api-ipty-deployment.yaml
+          APP_MANIFEST_FILE=app-ipty-deployment.yaml
+          sed -i "s|image: .*|image: $API_IMAGE_NAME:$VERSION|" $API_MANIFEST_FILE
+          sed -i "s|image: .*|image: $APP_IMAGE_NAME:$VERSION|" $APP_MANIFEST_FILE
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add $API_MANIFEST_FILE $APP_MANIFEST_FILE
+          git commit -m "Update Docker image versions"
+
+      - name: Push changes
+        run: git push
+
+
