@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Log in to DockerHub
-        run: docker login -u daisukebtw -p ${{ secrets.DOCKERHUB_SECRET }}
+        run: docker login -u daisukebtw -p${{ secrets.DOCKERHUB_SECRET }}
       
       - name: Build Docker image
         run: |
