@@ -9,10 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
-    env:
-      API_IMAGE_NAME: ipty-api
-      APP_IMAGE_NAME: ipty-app
 
     steps:
       - name: Checkout code
@@ -27,13 +23,13 @@ jobs:
       - name: Build Docker image
         run: |
           VERSION="1.${{ github.run_number }}"
-          docker build -t daisukebtw/$API_IMAGE_NAME:$VERSION ./api
-          docker build -t daiuskebtw/$APP_IMAGE_NAME:$VERSION ./app
+          docker build -t daisukebtw/ipty-api:$VERSION ./api
+          docker build -t daiuskebtw/ipty-app:$VERSION ./app
       
       - name: Push Docker image
         run: |
-          docker push daisukebtw/$API_IMAGE_NAME:$VERSION
-          docker push daisukebtw/$APP_IMAGE_NAME:$VERSION
+          docker push daisukebtw/ipty-api:$VERSION
+          docker push daisukebtw/ipty-app:$VERSION
 
 
       - name: Checkout configuration repository
@@ -47,8 +43,8 @@ jobs:
         run: |
           API_MANIFEST_FILE=api-ipty-deployment.yaml
           APP_MANIFEST_FILE=app-ipty-deployment.yaml
-          sed -i "s|image: .*|image: $API_IMAGE_NAME:$VERSION|" $API_MANIFEST_FILE
-          sed -i "s|image: .*|image: $APP_IMAGE_NAME:$VERSION|" $APP_MANIFEST_FILE
+          sed -i "s|image: .*|image: ipty-api:$VERSION|" $API_MANIFEST_FILE
+          sed -i "s|image: .*|image: ipty-app:$VERSION|" $APP_MANIFEST_FILE
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
           git add $API_MANIFEST_FILE $APP_MANIFEST_FILE
