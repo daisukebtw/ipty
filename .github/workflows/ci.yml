@@ -28,13 +28,13 @@ jobs:
         run: |
           VERSION="1.${{ github.run_number }}"
           docker build -t daisukebtw/$API_IMAGE_NAME:$VERSION ./api
-          docker build -t daisukebtw/$APP_IMAGE_NAME ./app
+          docker build -t daisukebtw/$APP_IMAGE_NAME:$VERSION ./app
 
       
       - name: Push Docker image
         run: |
-          docker push daisukebtw/$API_IMAGE_NAME
-          docker push daisukebtw/$APP_IMAGE_NAME
+          docker push daisukebtw/$API_IMAGE_NAME:$VERSION
+          docker push daisukebtw/$APP_IMAGE_NAME:$VERSION
 
 
       - name: Checkout configuration repository
@@ -48,8 +48,8 @@ jobs:
         run: |
           API_MANIFEST_FILE=api-ipty-deployment.yaml
           APP_MANIFEST_FILE=app-ipty-deployment.yaml
-          sed -i "s|image: .*|image: $API_IMAGE_NAME|" $API_MANIFEST_FILE
-          sed -i "s|image: .*|image: $APP_IMAGE_NAME|" $APP_MANIFEST_FILE
+          sed -i "s|image: .*|image: $API_IMAGE_NAME:$VERSION|" $API_MANIFEST_FILE
+          sed -i "s|image: .*|image: $APP_IMAGE_NAME:$VERSION|" $APP_MANIFEST_FILE
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
           git add $API_MANIFEST_FILE $APP_MANIFEST_FILE
