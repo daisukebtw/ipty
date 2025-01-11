@@ -28,7 +28,7 @@ jobs:
         run: docker build -t daisukebtw/$API_IMAGE_NAME ./api
 
       - name: Build APP Docker image
-        run: docker build -t daiuskebtw/$APP_IMAGE_NAME ./app
+        run: docker build -t daisukebtw/$APP_IMAGE_NAME ./app
 
       
       - name: Push Docker image
