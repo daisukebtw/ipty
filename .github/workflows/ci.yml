@@ -25,10 +25,10 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       
       - name: Build API Docker image
-        run: docker build -t daisukebtw/$API_IMAGE_NAME ./api
-
-      - name: Build APP Docker image
-        run: docker build -t daisukebtw/$APP_IMAGE_NAME ./app
+        run: |
+          VERSION="1.${{ github.run_number }}"
+          docker build -t daisukebtw/$API_IMAGE_NAME:$VERSION ./api
+          docker build -t daisukebtw/$APP_IMAGE_NAME ./app
 
       
       - name: Push Docker image
