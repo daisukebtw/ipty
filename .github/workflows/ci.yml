@@ -10,6 +10,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      API_IMAGE_NAME: ipty-api
+      APP_IMAGE_NAME: ipty-app
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
