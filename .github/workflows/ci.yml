@@ -23,10 +23,15 @@ jobs:
         with:
           username: daisukebtw
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+        
+      - name: Set VERSION variable
+        run: |
+          VERSION=1.${{ github.run_number }}
+          echo "VERSION=1.${{ github.run_number }}" >> $GITHUB_ENV
+
       
       - name: Build API Docker image
         run: |
-          echo "VERSION=1.${{ github.run_number }}" >> $GITHUB_ENV
           docker build -t daisukebtw/$APP_IMAGE_NAME:$VERSION ./app
           docker build -t daisukebtw/$API_IMAGE_NAME:$VERSION ./api
 
