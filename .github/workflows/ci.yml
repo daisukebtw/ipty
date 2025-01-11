@@ -27,8 +27,10 @@ jobs:
       - name: Build API Docker image
         run: |
           VERSION="1.${{ github.run_number }}"
-          docker build -t daisukebtw/$API_IMAGE_NAME:$VERSION ./api
-          docker build -t daisukebtw/$APP_IMAGE_NAME:$VERSION ./app
+          docker build -t $API_IMAGE_NAME:$VERSION ./api
+          docker build -t $APP_IMAGE_NAME:$VERSION ./app
+          docker tag $API_IMAGE_NAME:$VERSION daisukebtw/$API_IMAGE_NAME:$VERSION
+          docker tag $APP_IMAGE_NAME:$VERSION daisukebtw/$APP_IMAGE_NAME:$VERSION
 
       
       - name: Push Docker image
